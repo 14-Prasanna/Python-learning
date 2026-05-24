@@ -1,0 +1,24 @@
+# '''
+# for loop
+# '''
+
+
+# num = 5
+# sum = 1
+
+# if(num > 0):
+#     for i in range(1, num+1):
+#         sum = sum * i
+# else:
+#     print("Inavlid")
+    
+# print(sum)
+
+
+def fac(num):
+    if(num == 0 or num == 1):
+        return 1
+    else:
+        return num * fac(num-1)
+
+print("Factorial of", fac(5))

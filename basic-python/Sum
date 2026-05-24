@@ -1,0 +1,15 @@
+
+
+num = int(input())
+
+i = 0
+sum = 0
+while(i < num):
+    num1 = int(input())
+    if(num == -1):
+        break
+    else:
+        sum = sum + num1
+        i = i+1
+
+print("The sum of the user input: ", sum)
