@@ -1,5 +1,5 @@
-start = int(input())
-i = start
-while i <= 100:
-    print(i, end=" ")
-    i = i + 10
+cost = int(input())
+if cost <= 15000:
+    print("Mobile chosen is within the budget")
+else:
+    print("Mobile chosen is beyond the budget")

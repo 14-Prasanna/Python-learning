@@ -1,13 +1,11 @@
-prices = []
-while True:
-    price = int(input())
-    if price == -1:
-        break
-    prices.append(price)
-
-in_range = []
-for p in prices:
-    if p >= 5 and p <= 30:
-        in_range.append(p)
-
-print(max(prices), min(prices), int(sum(in_range)/len(in_range)))
+month = int(input())
+if month < 1 or month > 12:
+    print("Invalid month")
+elif month in [3, 4, 5]:
+    print("Spring")
+elif month in [6, 7, 8]:
+    print("Summer")
+elif month in [9, 10, 11]:
+    print("Autumn")
+else:
+    print("Winter")

@@ -1,12 +1,13 @@
-n = int(input())
-is_prime = True
-if n < 2:
-    is_prime = False
-for i in range(2, n):
-    if n % i == 0:
-        is_prime = False
-        break
-if is_prime:
-    print("Yes")
-else:
-    print("No")
+code = int(input())
+if code == 1:
+    a = float(input())
+    b = float(input())
+    print(a + b)
+elif code == 2:
+    a = int(input())
+    b = int(input())
+    print(a * b)
+elif code == 3:
+    a = input()
+    b = input()
+    print(a + b)

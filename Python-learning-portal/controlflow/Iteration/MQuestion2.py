@@ -1,6 +1,5 @@
 n = int(input())
-if len(str(n)) != 5:
-    print("Not a valid number")
+if n % 2 != 0:
+    print(3 * n + 1)
 else:
-    reversed_num = int(str(n)[::-1])
-    print(reversed_num)
+    print(n // 2)
