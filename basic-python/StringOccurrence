@@ -1,0 +1,14 @@
+String = input("Enter String: ")
+digit = 0
+letter = 0
+
+for s in String:
+    if s.isnumeric():
+        digit +=1
+    elif s.isalpha():
+        letter +=1
+    else:
+        pass
+
+print("Total letter found: " , letter)    
+print("Total digit found: ", digit)

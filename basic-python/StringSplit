@@ -1,0 +1,11 @@
+# listA = []
+
+# listA = input("enter the list element").split(' ')
+
+# print(listA)
+
+
+t  = []
+
+t = list(map(int, input("Enter the element sepeared by space ").split()))
+print("The entered List is: \n", t)
