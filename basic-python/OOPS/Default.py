@@ -18,6 +18,9 @@ class Circle:
     def setColor(self, color):
         self._color = color
 
+    def getRadius(self):
+        return 3.14* self._radius * self._radius
+
     
     def display(self):
         print("Radius :", self._radius)
@@ -38,6 +41,7 @@ obj1.display()
 print()
 print("Getter Radius :", obj1.getRadius())
 print("Getter Color  :", obj1.getColor())
+print("The radius of the circle", obj1.getRadius())
 print()
 
 
