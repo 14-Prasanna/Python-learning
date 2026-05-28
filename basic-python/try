@@ -1,0 +1,16 @@
+'''Hello it an python language'''
+
+try:
+    a = int(input("Enter a: "))
+    b = int(input("Enter b: "))
+    c = a/b
+except(ZeroDivisionError):
+    print("Cannot divide with Zero")
+
+except(ArithmeticError):
+    print("Some ArithmeticError")
+
+else:
+    print("Exception lam ila poitu vaa...")
+
+print("Successfully executed...")
