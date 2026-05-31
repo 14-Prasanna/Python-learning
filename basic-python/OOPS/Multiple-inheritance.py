@@ -1,16 +1,39 @@
 class TeamMember:
-    def __int__(self, name, uid):
+
+    def __init__(self, name, uid):
         self.name = name
         self.uid = uid
-    
+
     def display(self):
-        print(f"Team Member: {self.name}, UID: {self.uid}")
+        print("Team Member Name :", self.name)
+        print("Team Member UID  :", self.uid)
 
 
 class Worker:
-    def __int__(self, pay, jobtitle):
+
+    def __init__(self, pay, jobtitle):
         self.pay = pay
-        self.jobtitle = jobtitle 
+        self.jobtitle = jobtitle
 
     def display(self):
-        print(f"Worker: {self.jobtitle}, Pay: {self.pay}")
+        print("Job Title :", self.jobtitle)
+        print("Pay       :", self.pay)
+
+
+class TeamLeader( Worker, TeamMember):
+
+    def __init__(self, name, uid, pay, jobtitle, exp):
+
+        self.exp = exp
+        super().__init__(name, uid)
+        super().__init__(pay, jobtitle)
+
+    def display(self):
+        super().display()
+        super().display()
+
+        print("Experience :", self.exp)
+
+
+TL = TeamLeader("Prasanna",101,25000,"TESTNG Automation",5)
+TL.display()
