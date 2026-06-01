@@ -1,12 +1,7 @@
-held = int(input().strip())
-attended = int(input().strip())
-percentage = (attended / held) * 100
+n = input().strip()
+digits = len(n)
+total = 0
+for d in n:
+    total += int(d) ** digits
 
-if percentage >= 75:
-    print(str(int(percentage)) + "% Allowed")
-else:
-    medical = input().strip()
-    if medical.upper() == 'Y':
-        print(str(int(percentage)) + "% Allowed")
-    else:
-        print(str(int(percentage)) + "% Not allowed")
+print("true" if total == int(n) else "false")
