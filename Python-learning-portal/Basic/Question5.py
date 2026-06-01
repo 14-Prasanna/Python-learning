@@ -19,11 +19,19 @@ calculation. It assumes that the birthdate is in the past.
 
 from datetime import datetime
 
-input1 = input("Enter the DOB: ")
+# Read input without printing prompt first (better for piped input)
+input1 = input().strip()
 
-birthdate = datetime.strptime(input1, "%Y-%m-%d")
+# Optional: Print prompt for local testing (won't break pipeline)
+print("Enter the DOB:", input1)
 
-today = datetime.today()
-
-age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
-print("Your age is: ", age)
+try:
+    birthdate = datetime.strptime(input1, "%Y-%m-%d")
+    today = datetime.today()
+    
+    age = today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
+    
+    print("Your age is:", age)
+    
+except ValueError:
+    print("Invalid date format. Please use YYYY-MM-DD")
