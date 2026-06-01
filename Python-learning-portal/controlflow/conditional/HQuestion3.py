@@ -1,13 +1,19 @@
 prices = []
+
+# Read all prices until -1
 while True:
-    price = int(input())
-    if price == -1:
+    try:
+        price = int(input().strip())
+        if price == -1:
+            break
+        prices.append(price)
+    except:
         break
-    prices.append(price)
 
-in_range = []
-for p in prices:
-    if p >= 5 and p <= 30:
-        in_range.append(p)
+if not prices:
+    print("0 0 0")
+    exit()
 
-print(max(prices), min(prices), int(sum(in_range)/len(in_range)))
+in_range = [p for p in prices if 5 <= p <= 30]
+
+print(max(prices), min(prices), int(sum(in_range)/len(in_range)) if in_range else 0)
