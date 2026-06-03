@@ -1,9 +1,7 @@
-n = input()
+n = input().strip()
 digits = len(n)
 total = 0
 for d in n:
-    total = total + int(d) ** digits
-if total == int(n):
-    print("true")
-else:
-    print("false")
+    total += int(d) ** digits
+
+print("true" if total == int(n) else "false")
