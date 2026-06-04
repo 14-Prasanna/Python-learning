@@ -21,7 +21,6 @@ def take_screenshot(driver, name):
 # ── Ad Dismissal Helper ────────────────────────────────────────────
 def dismiss_ads(driver):
     try:
-        # Remove all ad iframes from the DOM directly
         driver.execute_script("""
             var iframes = document.querySelectorAll('iframe');
             for (var i = 0; i < iframes.length; i++) {
@@ -35,7 +34,6 @@ def dismiss_ads(driver):
                     id.includes('google_ads')
                 ) {
                     iframes[i].remove();
-                    console.log('Removed ad iframe: ' + id);
                 }
             }
         """)
@@ -47,13 +45,11 @@ def dismiss_ads(driver):
 def safe_click(driver, xpath):
     dismiss_ads(driver)
     try:
-        # Normal click first
         element = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.XPATH, xpath))
         )
         element.click()
     except Exception:
-        # Fallback: JavaScript click if still intercepted
         print(f"Normal click failed, using JS click for: {xpath}")
         element = driver.find_element(By.XPATH, xpath)
         driver.execute_script("arguments[0].click();", element)
@@ -146,34 +142,55 @@ take_screenshot(driver, "05_account_created")
 
 # ── Continue after Account Creation ───────────────────────────────
 safe_click(driver, "//a[text() = 'Continue']")
-time.sleep(10)
+
+# Wait for navbar to load after redirect
+WebDriverWait(driver, 20).until(
+    EC.presence_of_element_located((By.XPATH, "//ul[@class='nav navbar-nav']"))
+)
+time.sleep(3)
+take_screenshot(driver, "06_after_continue")
 
 # ── SOFT ASSERT — Logged in as Shri_Deepak ────────────────────────
-userName = driver.find_element(
-    By.XPATH,
-    "//ul[@class = 'nav navbar-nav']/descendant::a[contains(text(),'Logged in as')]"
-)
-print(userName.text)
-checkuser = userName.text
+try:
+    userName = WebDriverWait(driver, 15).until(
+        EC.presence_of_element_located((
+            By.XPATH,
+            "//ul[@class='nav navbar-nav']//a[contains(., 'Logged in as')]"
+        ))
+    )
+    print(userName.text)
+    checkuser = userName.text
 
-# Soft Assert
-if "Logged in as Shri_Deepak" not in checkuser:
-    msg = f"[SOFT ASSERT FAILED] Expected 'Logged in as Shri_Deepak' | Actual: '{checkuser}'"
+    # Soft Assert
+    if "Logged in as Shri_Deepak" not in checkuser:
+        msg = f"[SOFT ASSERT FAILED] Expected 'Logged in as Shri_Deepak' | Actual: '{checkuser}'"
+        soft_assertions.append(msg)
+        take_screenshot(driver, "FAIL_username_mismatch")
+        print(msg)
+
+    if "Logged in as Shri_Deepak" in checkuser:
+        print("The Logged username is show")
+    else:
+        print("The logged username is not show")
+
+except Exception as e:
+    # Debug: print actual navbar HTML to console
+    navbar_html = driver.execute_script("""
+        var nav = document.querySelector('ul.nav.navbar-nav');
+        return nav ? nav.innerHTML : 'Navbar not found';
+    """)
+    print(f"Navbar HTML: {navbar_html}")
+    take_screenshot(driver, "FAIL_navbar_debug")
+    msg = f"[SOFT ASSERT FAILED] 'Logged in as Shri_Deepak' element not found. Error: {e}"
     soft_assertions.append(msg)
-    take_screenshot(driver, "FAIL_username_mismatch")
     print(msg)
 
-if "Logged in as Shri_Deepak" in checkuser:
-    print("The Logged username is show")
-else:
-    print("The logged username is not show")
-
-take_screenshot(driver, "06_home_after_register")
+take_screenshot(driver, "07_home_after_register")
 
 # ── Delete Account ─────────────────────────────────────────────────
 safe_click(driver, "//a[@href = '/delete_account']")
 time.sleep(10)
-take_screenshot(driver, "07_after_delete_account")
+take_screenshot(driver, "08_after_delete_account")
 
 # ── SOFT ASSERT — Account Deleted ─────────────────────────────────
 deleteSuc = driver.find_element(
@@ -195,11 +212,11 @@ if "Your account has been permanently deleted!" in deleteMsg:
 else:
     print("The account is not deleted")
 
-take_screenshot(driver, "08_account_deleted")
+take_screenshot(driver, "09_account_deleted")
 
 # ── Continue after Delete ──────────────────────────────────────────
 safe_click(driver, "//a[text() = 'Continue']")
 time.sleep(10)
-take_screenshot(driver, "09_final_home_page")
+take_screenshot(driver, "10_final_home_page")
 
 driver.close()
