@@ -9,7 +9,7 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.service import Service
 from webdriver_manager.firefox import GeckoDriverManager
 
-# ── Screenshot folder ──────────────────────────────────────────────
+
 SCREENSHOT_DIR = "screenshots"
 os.makedirs(SCREENSHOT_DIR, exist_ok=True)
 
@@ -18,7 +18,7 @@ def take_screenshot(driver, name):
     driver.save_screenshot(path)
     print(f"Screenshot saved: {path}")
 
-# ── Ad Dismissal Helper ────────────────────────────────────────────
+
 def dismiss_ads(driver):
     try:
         driver.execute_script("""
@@ -41,7 +41,7 @@ def dismiss_ads(driver):
     except Exception as e:
         print(f"Ad dismissal skipped: {e}")
 
-# ── Safe Click Helper ──────────────────────────────────────────────
+
 def safe_click(driver, xpath):
     dismiss_ads(driver)
     try:
@@ -54,7 +54,7 @@ def safe_click(driver, xpath):
         element = driver.find_element(By.XPATH, xpath)
         driver.execute_script("arguments[0].click();", element)
 
-# ── Driver Setup ───────────────────────────────────────────────────
+
 soft_assertions = []
 
 options = Options()
@@ -70,17 +70,17 @@ driver = webdriver.Firefox(
 print("Firefox is assigned")
 driver.maximize_window()
 
-# ── Navigate to site ───────────────────────────────────────────────
+
 driver.get("https://automationexercise.com/")
 print(driver.current_url)
 take_screenshot(driver, "01_home_page")
 
-# ── Click Signup/Login ─────────────────────────────────────────────
+
 safe_click(driver, "//a[@href='/login']")
 print(driver.current_url)
 take_screenshot(driver, "02_login_page")
 
-# ── Fill Signup Form ───────────────────────────────────────────────
+
 name = driver.find_element(By.NAME, "name")
 name.send_keys("Shri_Deepak")
 
@@ -91,7 +91,7 @@ safe_click(driver, "//button[@data-qa='signup-button']")
 time.sleep(10)
 take_screenshot(driver, "03_account_info_page")
 
-# ── Fill Account Details ───────────────────────────────────────────
+
 passwords = driver.find_element(By.XPATH, "//input[@id='password']")
 passwords.send_keys("1234567890")
 
@@ -123,15 +123,15 @@ safe_click(driver, "//button[text()='Create Account']")
 time.sleep(10)
 take_screenshot(driver, "04_after_create_account")
 
-# ── HARD ASSERT — Account Created ─────────────────────────────────
+
 success = driver.find_element(By.XPATH, "//h2[@data-qa='account-created']")
 print(success.text)
 
 val = success.text.lower()
 
-# Hard Assert
-assert "account created!" in val, \
-    f"[HARD ASSERT FAILED] Expected 'account created!' | Actual: '{val}'"
+
+assert "account created!" in val
+f"[HARD ASSERT FAILED] Expected 'account created!' | Actual: '{val}'"
 
 if "account created!" in val:
     print("The registration is successful")
@@ -140,17 +140,17 @@ else:
 
 take_screenshot(driver, "05_account_created")
 
-# ── Continue after Account Creation ───────────────────────────────
+
 safe_click(driver, "//a[text() = 'Continue']")
 
-# Wait for navbar to load after redirect
+
 WebDriverWait(driver, 20).until(
     EC.presence_of_element_located((By.XPATH, "//ul[@class='nav navbar-nav']"))
 )
 time.sleep(3)
 take_screenshot(driver, "06_after_continue")
 
-# ── SOFT ASSERT — Logged in as Shri_Deepak ────────────────────────
+
 try:
     userName = WebDriverWait(driver, 15).until(
         EC.presence_of_element_located((
@@ -161,7 +161,7 @@ try:
     print(userName.text)
     checkuser = userName.text
 
-    # Soft Assert
+    
     if "Logged in as Shri_Deepak" not in checkuser:
         msg = f"[SOFT ASSERT FAILED] Expected 'Logged in as Shri_Deepak' | Actual: '{checkuser}'"
         soft_assertions.append(msg)
@@ -187,12 +187,12 @@ except Exception as e:
 
 take_screenshot(driver, "07_home_after_register")
 
-# ── Delete Account ─────────────────────────────────────────────────
+
 safe_click(driver, "//a[@href = '/delete_account']")
 time.sleep(10)
 take_screenshot(driver, "08_after_delete_account")
 
-# ── SOFT ASSERT — Account Deleted ─────────────────────────────────
+
 deleteSuc = driver.find_element(
     By.XPATH,
     "//p[text() = 'Your account has been permanently deleted!']"
@@ -200,7 +200,7 @@ deleteSuc = driver.find_element(
 print(deleteSuc.text)
 deleteMsg = deleteSuc.text
 
-# Soft Assert
+
 if "Your account has been permanently deleted!" not in deleteMsg:
     msg = f"[SOFT ASSERT FAILED] Expected 'Your account has been permanently deleted!' | Actual: '{deleteMsg}'"
     soft_assertions.append(msg)
@@ -214,7 +214,7 @@ else:
 
 take_screenshot(driver, "09_account_deleted")
 
-# ── Continue after Delete ──────────────────────────────────────────
+
 safe_click(driver, "//a[text() = 'Continue']")
 time.sleep(10)
 take_screenshot(driver, "10_final_home_page")
