@@ -30,6 +30,7 @@ def get_driver(browser="chrome"):
         options.add_argument("--height=1080")
         service = FirefoxService(GeckoDriverManager().install())
         driver = webdriver.Firefox(service=service, options=options)
+        print("Using Firefox browser")
     else:
         options = ChromeOptions()
         options.add_argument("--headless")
@@ -41,13 +42,14 @@ def get_driver(browser="chrome"):
         options.add_argument("--disable-popup-blocking")
         service = ChromeService(ChromeDriverManager().install())
         driver = webdriver.Chrome(service=service, options=options)
+        print("Using Chrome browser")
     
     driver.set_page_load_timeout(30)
     return driver
 
 
-# Main Test
-get_driver("firefox")
+# =============== Main Test ===============
+driver = get_driver("firefox")   # Change to "chrome" if needed
 wait = WebDriverWait(driver, 15)
 
 try:
