@@ -4,8 +4,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.service import Service
+from webdriver_manager.firefox import GeckoDriverManager
 
 
+# ── Ad Dismissal Helper ───────────────────────────────────────────────────────
 def dismiss_ads(driver):
     try:
         driver.execute_script("""
@@ -31,9 +34,11 @@ def dismiss_ads(driver):
 
 def scroll_to_element(driver, element):
     """Scrolls the page until the given WebElement is in view."""
-    driver.execute_script("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", element)
+    driver.execute_script(
+        "arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});",
+        element
+    )
     print(f"Scrolled to element: <{element.tag_name}>")
-
 
 
 def scroll_by_amount(driver, x=0, y=500):
@@ -42,71 +47,71 @@ def scroll_by_amount(driver, x=0, y=500):
     print(f"Scrolled by x={x}px, y={y}px")
 
 
+# ── Firefox Options ───────────────────────────────────────────────────────────
 options = Options()
 options.add_argument("--headless")
 options.add_argument("--width=1920")
 options.add_argument("--height=1080")
+# FIX: maximize_window() does not work in headless mode — removed
+options.set_preference("network.proxy.type", 0)
+options.set_preference("browser.cache.disk.enable", False)
+options.set_preference("browser.cache.memory.enable", False)
+options.set_preference("network.http.connection-timeout", 30)
+options.set_preference("network.http.response.timeout", 30)
 
-driver = webdriver.Firefox(options=options)
-driver.maximize_window()
+# ── Driver Setup ──────────────────────────────────────────────────────────────
+service = Service(GeckoDriverManager().install())
+driver  = webdriver.Firefox(service=service, options=options)
+driver.set_page_load_timeout(30)
 
 wait = WebDriverWait(
     driver, 15, poll_frequency=2, ignored_exceptions=[NoSuchElementException]
 )
 
-
+# ── Test ──────────────────────────────────────────────────────────────────────
 try:
     driver.get("https://automationexercise.com/")
-
-    
     dismiss_ads(driver)
 
-    
     contact_link = driver.find_element(By.XPATH, "//a[normalize-space()='Contact us']")
-    scroll_to_element(driver, contact_link) 
+    scroll_to_element(driver, contact_link)
     contact_link.click()
 
-    
     name_field = wait.until(
         EC.visibility_of_element_located((By.XPATH, "//input[@placeholder='Name']"))
     )
     scroll_to_element(driver, name_field)
     name_field.send_keys("Prasanna")
 
-    
     email_field = driver.find_element(By.XPATH, "//input[@placeholder='Email']")
     scroll_to_element(driver, email_field)
     email_field.send_keys("venkatesh@gmail.com")
 
-    
     subject_field = driver.find_element(By.XPATH, "//input[@placeholder='Subject']")
     scroll_to_element(driver, subject_field)
     subject_field.send_keys("Related to not working website")
 
-    
     scroll_by_amount(driver, y=300)
     message_field = driver.find_element(By.XPATH, "//textarea[@id='message']")
     scroll_to_element(driver, message_field)
     message_field.send_keys("Related to not working of the website")
 
-    
     upload_field = driver.find_element(By.XPATH, "//input[@name='upload_file']")
     scroll_to_element(driver, upload_field)
-    upload_field.send_keys("C:\Users\prasa\Downloads\cybershield_report_updated.docx")
 
-    
+    # FIX: use raw string (r"...") so backslashes are not treated as
+    #      Python unicode escape sequences (\U, \p, \D were causing SyntaxError)
+    upload_field.send_keys(r"C:\Users\prasa\Downloads\cybershield_report_updated.docx")
+
     dismiss_ads(driver)
 
-    
     submit_btn = driver.find_element(By.XPATH, "//input[@name='submit']")
     scroll_to_element(driver, submit_btn)
     submit_btn.click()
 
-    
     alert = wait.until(EC.alert_is_present())
     alert.accept()
 
-    
     msg = wait.until(
         EC.visibility_of_element_located(
             (By.XPATH, "//div[@class='status alert alert-success']")
@@ -115,11 +120,13 @@ try:
 
     print(f"Result: {msg}")
     assert msg == "Success! Your details have been submitted successfully.", \
-        f"Unexpected message: {msg}"
+        f"Unexpected message: '{msg}'"
     print("Test Passed")
 
 except Exception as e:
     print(f"Test Failed: {e}")
+    raise
 
 finally:
     driver.quit()
+    print("Browser closed")
