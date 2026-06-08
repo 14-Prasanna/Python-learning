@@ -3,6 +3,10 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.service import Service
+from webdriver_manager.firefox import GeckoDriverManager
+
 
 
 def dismiss_ads(driver):
@@ -20,7 +24,7 @@ def dismiss_ads(driver):
 def scroll_to_element(driver, element):
     """
     Scrolls until the given WebElement is in view using ActionChains.
-    Requires Selenium 4.2+ (uses scroll_to_element internally).
+    Requires Selenium 4.2+.
     """
     ActionChains(driver)\
         .scroll_to_element(element)\
@@ -28,13 +32,9 @@ def scroll_to_element(driver, element):
     print(f"ActionChains: scrolled to element → <{element.tag_name}>")
 
 
-
 def scroll_by_amount(driver, delta_x=0, delta_y=500):
     """
     Scrolls the page by the given pixel amount using ActionChains.
-    delta_x → horizontal scroll (px)
-    delta_y → vertical scroll (px)
-    Origin is the top-left of the viewport (0, 0).
     """
     ActionChains(driver)\
         .scroll_by_amount(delta_x, delta_y)\
@@ -43,61 +43,75 @@ def scroll_by_amount(driver, delta_x=0, delta_y=500):
 
 
 
-d = webdriver.Firefox()
-d.maximize_window()
+options = Options()
+options.add_argument("--headless")         
+options.add_argument("--width=1920")       
+options.add_argument("--height=1080")
+options.set_preference("network.proxy.type", 0)
+options.set_preference("browser.cache.disk.enable", False)
+options.set_preference("browser.cache.memory.enable", False)
+options.set_preference("network.http.connection-timeout", 30)
+options.set_preference("network.http.response.timeout", 30)
+
+
+service = Service(GeckoDriverManager().install())
+d = webdriver.Firefox(service=service, options=options)
+d.set_page_load_timeout(30)
+
 wait = WebDriverWait(d, 10)
 
+
 try:
-    
     d.get("https://automationexercise.com")
 
+    products_link = d.find_element(By.XPATH, "//a[@href='/products']")
+    scroll_to_element(d, products_link)
+    products_link.click()
 
-    products = d.find_element(By.XPATH, "//a[@href='/products']")
-    scroll_to_element(d, products)          
-    products.click()
-
-    
     dismiss_ads(d)
 
-    
-    scroll_by_amount(d, delta_y=400)      
+    scroll_by_amount(d, delta_y=400)
 
-    
+   
     product_name_elements = d.find_elements(
         By.XPATH, "//img/following-sibling::p"
     )
-    product_names = []
-    for item in product_name_elements:
-        product_names.append(item.text)
-
-    if len(product_names) == 34:
-        print(f"Product count verified: {len(product_names)} products found")
-    else:
-        print(f"Product count mismatch: found {len(product_names)} (expected 34)")
+    product_names = [item.text for item in product_name_elements]
+    count = len(product_names)
 
     
-    first_product = d.find_element(
-        By.XPATH,
-        "//div[@class='col-sm-9 padding-right']//div[2]//div[1]//div[2]//ul[1]//li[1]//a[1]"
+    assert count > 0, "No products found on the page"
+    print(f"Product count: {count} products found")
+    print("Product names:", product_names)
+
+    first_product = wait.until(
+        EC.element_to_be_clickable((
+            By.XPATH,
+            "(//div[@class='productinfo text-center']/following-sibling::div//a[normalize-space()='View Product'])[1]"
+        ))
     )
-    scroll_to_element(d, first_product)    
+    scroll_to_element(d, first_product)
     first_product.click()
 
-    
+   
     title = wait.until(
         EC.visibility_of_element_located(
-            (By.XPATH, "//h2[normalize-space()='Blue Top']")
+            (By.XPATH, "//div[@class='product-information']//h2")
         )
     ).text
 
-    assert title == "Blue Top", f"Unexpected title: {title}"
+    assert title == "Blue Top", f"Unexpected title: '{title}'"
     print(f"Product title verified: '{title}'")
+    print("Test Passed")
 
 except AssertionError as ae:
     print(f"Assertion Failed: {ae}")
+    raise         
 
 except Exception as e:
     print(f"Test Error: {e}")
+    raise         
 
 finally:
     d.quit()
+    print("Browser closed")
