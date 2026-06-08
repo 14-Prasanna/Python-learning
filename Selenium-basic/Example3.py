@@ -3,7 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-
+from selenium.webdriver.firefox.options import Options 
 
 
 def dismiss_ads(driver):
@@ -29,21 +29,22 @@ def dismiss_ads(driver):
         print(f"Ad dismissal skipped: {e}")
 
 
+options = Options()                          
+options.add_argument("--headless")
+options.add_argument("--width=1920")
+options.add_argument("--height=1080")
 
+driver = webdriver.Firefox(options=options)  
 
-
-driver = webdriver.Firefox()
 wait = WebDriverWait(driver, 15)
 print("Firefox is assigned")
 
-driver.maximize_window()
 driver.get("https://automationexercise.com/")
 print(driver.current_url)
 
 driver.find_element(By.XPATH, "//a[@href='/login']").click()
 dismiss_ads(driver)
 print(driver.current_url)
-
 
 wait.until(EC.visibility_of_element_located((
     By.XPATH, "//form[@action = '/login']/child::input[@name = 'email']"
@@ -57,22 +58,30 @@ login_email.send_keys("testlogin@gmail.com")
 login_pass = driver.find_element(
     By.XPATH, "//form[@action = '/login']/child::input[@name = 'password']"
 )
-login_pass.send_keys("1234567890")
+login_pass.send_keys("wrongpassword")         
 
 login_btn = driver.find_element(
     By.XPATH, "//form[@action = '/login']/child::button[text() = 'Login']"
 )
 login_btn.click()
 
-wait.until(EC.visibility_of_element_located((By.XPATH, "//form[@action = '/login']/child::p[text() = 'Your email or password is incorrect!']")))
+dismiss_ads(driver)
 
-elements = driver.find_element(By.XPATH, "//form[@action = '/login']/child::p[text() = 'Your email or password is incorrect!']")
+wait.until(EC.visibility_of_element_located((
+    By.XPATH, "//form[@action = '/login']/child::p[text() = 'Your email or password is incorrect!']"
+)))
+
+elements = driver.find_element(
+    By.XPATH, "//form[@action = '/login']/child::p[text() = 'Your email or password is incorrect!']"
+)
 
 val = elements.text
 
 print(val)
 
-assert val == "Success: Your email or password is incorrect!", \
-"Failed: The wrong email and password is accepted"
+assert val == "Your email or password is incorrect!", \
+"Failed: The wrong credentials error message was not shown"
+
+print("Passed: Incorrect credentials are rejected as expected")
 
 driver.quit()

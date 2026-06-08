@@ -3,7 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-
+from selenium.webdriver.firefox.options import Options 
 
 
 def dismiss_ads(driver):
@@ -29,11 +29,15 @@ def dismiss_ads(driver):
         print(f"Ad dismissal skipped: {e}")
 
 
-driver = webdriver.Firefox()
+options = Options()                            # ← Move options BEFORE driver init
+options.add_argument("--headless")
+options.add_argument("--width=1920")
+options.add_argument("--height=1080")
+
+driver = webdriver.Firefox(options=options)   # ← Pass options here
+
 wait = WebDriverWait(driver, 15)
-
-
-fuild_wait = WebDriverWait(driver, timeout=10.0, poll_frequency=0.2,ignored_exceptions=[Exception])
+fuild_wait = WebDriverWait(driver, timeout=10.0, poll_frequency=0.2, ignored_exceptions=[Exception])
 print("Firefox is assigned")
 
 driver.maximize_window()
@@ -43,7 +47,6 @@ print(driver.current_url)
 driver.find_element(By.XPATH, "//a[@href='/login']").click()
 dismiss_ads(driver)
 print(driver.current_url)
-
 
 wait.until(EC.visibility_of_element_located((
     By.XPATH, "//form[@action = '/login']/child::input[@name = 'email']"
@@ -70,16 +73,12 @@ userName = fuild_wait.until(EC.presence_of_element_located((
     By.XPATH, "//ul[@class='nav navbar-nav']//a[contains(., 'Logged in as')]"
 )))
 
-
 print(userName.text)
 checkuser = userName.text
-
-
 
 assert "Logged in as Test cases" in checkuser, \
     f"[ASSERT FAILED] Expected 'Logged in as Test cases' | Actual: '{checkuser}'"
 print("The Logged username is shown")
-
 
 driver.find_element(By.XPATH, "//ul[@class = 'nav navbar-nav']/descendant::a[@href = '/logout']").click()
 
@@ -88,9 +87,6 @@ dismiss_ads(driver)
 url = driver.current_url
 
 assert driver.current_url == url, \
-f"The logout is not happen"
+    f"The logout is not happen"
 
 print("The logout is done successfully")
-
-
-

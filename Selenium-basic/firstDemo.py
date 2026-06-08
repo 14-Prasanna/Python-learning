@@ -13,6 +13,12 @@ time.sleep(3)
 print(driver.current_url)
 print(driver.title)
 
+
+for request in driver.requests:
+    if request.response:
+        print("URL :", request.url)
+        print("Status :", request.response.status_code)
+
 elements = driver.find_element(By.NAME, "q")
 if(elements.is_enabled):
     print("The button is enabled")
