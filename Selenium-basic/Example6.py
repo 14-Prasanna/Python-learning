@@ -6,9 +6,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.firefox.options import Options
 
 
-# ──────────────────────────────────────────────
-# Helper: dismiss Google / DoubleClick ad iframes
-# ──────────────────────────────────────────────
 def dismiss_ads(driver):
     try:
         driver.execute_script("""
@@ -66,7 +63,7 @@ try:
 
     
     contact_link = driver.find_element(By.XPATH, "//a[normalize-space()='Contact us']")
-    scroll_to_element(driver, contact_link) ############
+    scroll_to_element(driver, contact_link) 
     contact_link.click()
 
     
