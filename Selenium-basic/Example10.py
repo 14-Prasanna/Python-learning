@@ -25,7 +25,7 @@ d.get("https://automationexercise.com/")
 dismiss_ads(d)
 subcription=d.find_element(By.XPATH,"//h2[normalize-space()='Subscription']").text
 print(subcription)
-wait.until(expected_conditions.visibility_of_element_located((By.XPATH,"//input[@id='susbscribe_email']"))).send_keys("tamil@gmail.com")
+wait.until(expected_conditions.visibility_of_element_located((By.XPATH,"//input[@id='susbscribe_email']"))).send_keys("prasanna@gmail.com")
 d.find_element(By.XPATH,"//button[@id='subscribe']").click()
 msg=d.find_element(By.XPATH,"//div[@class='alert-success alert']").text
 print(msg)
