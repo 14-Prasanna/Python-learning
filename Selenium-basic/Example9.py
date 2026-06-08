@@ -2,6 +2,11 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+
 def dismiss_ads(driver):
     try:
         driver.execute_script("""
@@ -13,10 +18,49 @@ def dismiss_ads(driver):
     except Exception as e:
         print("No ads found:", e)
 
-d = webdriver.Chrome()
+
+# ── Chrome Options ────────────────────────────────────────────────────────────
+options = Options()
+options.add_argument("--headless")
+options.add_argument("--window-size=1920,1080")
+options.add_argument("--no-sandbox")
+options.add_argument("--disable-dev-shm-usage")
+options.add_argument("--disable-gpu")
+
+# ── Driver Setup ──────────────────────────────────────────────────────────────
+service = Service(ChromeDriverManager().install())
+d = webdriver.Chrome(service=service, options=options)
+d.set_page_load_timeout(30)
+
 wait = WebDriverWait(d, 10)
-d.maximize_window()
-d.get("https://automationexercise.com/")
-wait.until(EC.element_to_be_clickable((By.XPATH, "//div[@class='item active']//button[@type='button'][normalize-space()='Test Cases']"))).click()
-testCaseMessage=wait.until(EC.visibility_of_element_located((By.XPATH,"//h2[normalize-space()='Test Cases']"))).text
-print(testCaseMessage)
+
+# ── Test ──────────────────────────────────────────────────────────────────────
+try:
+    d.get("https://automationexercise.com/")
+    dismiss_ads(d)
+
+    wait.until(EC.element_to_be_clickable((
+        By.XPATH,
+        "//div[@class='item active']//button[@type='button'][normalize-space()='Test Cases']"
+    ))).click()
+
+    testCaseMessage = wait.until(EC.visibility_of_element_located((
+        By.XPATH, "//h2[normalize-space()='Test Cases']"
+    ))).text
+
+    print("Test Case heading:", testCaseMessage)
+    assert testCaseMessage == "Test Cases", \
+        f"Unexpected heading: '{testCaseMessage}'"
+    print("Test Passed")
+
+except AssertionError as ae:
+    print(f"Assertion Failed: {ae}")
+    raise
+
+except Exception as e:
+    print(f"Test Error: {e}")
+    raise
+
+finally:
+    d.quit()
+    print("Browser closed")
