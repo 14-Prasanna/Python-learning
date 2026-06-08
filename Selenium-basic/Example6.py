@@ -61,15 +61,15 @@ wait = WebDriverWait(
 try:
     driver.get("https://automationexercise.com/")
 
-    # Dismiss any ads on the landing page
+    
     dismiss_ads(driver)
 
-    # Click "Contact us"
+    
     contact_link = driver.find_element(By.XPATH, "//a[normalize-space()='Contact us']")
-    scroll_to_element(driver, contact_link)
+    scroll_to_element(driver, contact_link) ############
     contact_link.click()
 
-    # Fill in Name
+    
     name_field = wait.until(
         EC.visibility_of_element_located((By.XPATH, "//input[@placeholder='Name']"))
     )

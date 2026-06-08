@@ -6,16 +6,14 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.options import Options
 
-# Optional: configure Firefox profile with ad blocking preferences
+
 options = Options()
 options.set_preference("dom.disable_open_during_load", True)
-options.set_preference("privacy.trackingprotection.enabled", True)   # Firefox built-in tracker blocking
+options.set_preference("privacy.trackingprotection.enabled", True)  
 options.set_preference("privacy.trackingprotection.pbmode.enabled", True)
 
 driver = webdriver.Firefox(options=options)
 
-# ❌ Removed CDP calls — not supported in Firefox
-# driver.execute_cdp_cmd(...)  <-- DELETE THESE LINES
 
 driver.get("https://leafground.com/select.xhtml")
 driver.maximize_window()
