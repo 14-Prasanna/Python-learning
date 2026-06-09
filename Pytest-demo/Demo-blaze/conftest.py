@@ -1,5 +1,6 @@
 import pytest
 from selenium import webdriver
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.support.ui import WebDriverWait
 from resources.ConfigReader import get_value
 
@@ -8,20 +9,21 @@ from resources.ConfigReader import get_value
 def setup(request):
 
     url = get_value("Basic Info", "url")
-    browser = get_value("Basic Info", "browser")
 
-    if browser.lower() == "firefox":
-        driver = webdriver.Firefox()
-    else:
-        raise Exception("Invalid browser")
+    options = FirefoxOptions()
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--window-size=1920,1080")
 
+    driver = webdriver.Firefox(options=options)
     driver.get(url)
     driver.maximize_window()
 
     wait = WebDriverWait(driver, 10)
 
     request.cls.driver = driver
-    request.cls.wait = wait
+    request.cls.wait   = wait
 
     yield
 
