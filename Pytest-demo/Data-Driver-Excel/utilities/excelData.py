@@ -1,20 +1,17 @@
 import openpyxl
+import os
 
-def get_data(path, sheet):
-    final_list =[]
 
-    workbook = openpyxl.load_workbook(path)
-    sheet = workbook[sheet]
-    total_row = sheet.max_row
-    total_col = sheet.max_column
+def get_data(file_name, sheet_name):
+    base_dir  = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    full_path = os.path.join(base_dir, "Excelfiles", file_name)
 
-    for r in range(2, total_row+1):
-        row_kist = []
+    workbook = openpyxl.load_workbook(full_path)
+    sheet    = workbook[sheet_name]
 
-        for c in range(1, total_col+1):
-            row_kist.append(sheet.cell(r,c).value)
+    data = []
+    for row in sheet.iter_rows(min_row=2, values_only=True):
+        if any(cell is not None for cell in row):
+            data.append(row)
 
-        final_list.append(row_kist)
-
-    
-    return final_list
+    return data
