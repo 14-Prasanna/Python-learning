@@ -1,0 +1,1 @@
+[{"uid":"68cf63a008479ba","name":"test_login_with_valid[Admin@123-admin12]","time":{"start":1780999338027,"stop":1780999339913,"duration":1886},"status":"passed","severity":"normal"},{"uid":"e11eecceb4d81d46","name":"test_login_with_valid[admin-admin]","time":{"start":1780999302038,"stop":1780999314053,"duration":12015},"status":"passed","severity":"normal"}]

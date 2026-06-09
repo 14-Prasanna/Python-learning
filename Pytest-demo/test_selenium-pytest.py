@@ -22,7 +22,7 @@ def test_google_search(search_term):
         
         time.sleep(5)  
         
-        print(f"✅ Search completed for: {search_term}")
+        print(f"Search completed for: {search_term}")
         
     finally:
         driver.close()   
