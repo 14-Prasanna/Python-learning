@@ -11,7 +11,7 @@ from utilities import excelData
 @pytest.mark.usefixtures("setup")
 @pytest.mark.parametrize(
     "username,password",
-    excelData.get_data("Excelfiles\\loginData.xlsx", "login")
+    excelData.get_data("LoginData.xlsx", "login")
 )
 def test_login_with_valid(setup, username, password):
 
