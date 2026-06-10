@@ -9,7 +9,6 @@ from resources.read_config import get_config
 def setup_and_teardown(request):
     browser = get_config("basic info", "browser").strip().lower()
 
-    
     headless = os.getenv("HEADLESS", "false").lower() == "true"
 
     if browser == "chrome":
