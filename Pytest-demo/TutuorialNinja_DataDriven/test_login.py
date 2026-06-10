@@ -12,7 +12,7 @@ from utilites.logCreator import log_generator
 @pytest.mark.usefixtures("setup_and_teardown")
 class TestLogin1:
 
-    logger = log_generator
+    logger = log_generator()
 
 
     @pytest.mark.run(order=2)
