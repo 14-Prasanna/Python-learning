@@ -1,0 +1,2 @@
+[32mINFO    [0m utilites.logCreator:test_login.py:29 Starting test_search with product='mac'
+[32mINFO    [0m utilites.logCreator:test_login.py:64 Search SUCCESS — product='mac' | 4 result(s) found.

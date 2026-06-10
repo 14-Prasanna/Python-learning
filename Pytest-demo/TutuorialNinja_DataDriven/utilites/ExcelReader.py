@@ -1,17 +1,25 @@
 import openpyxl
 
-def get_data(path,sheet_name):
-    final_list=[]
 
-    workbook=openpyxl.load_workbook(path)
-    sheet=workbook[sheet_name]
-    total_rows=sheet.max_row
-    total_coloum=sheet.max_column
+def get_data(file_path: str, sheet_name: str) -> list:
+   
+    wb = openpyxl.load_workbook(file_path)
+    ws = wb[sheet_name]
 
-    for r in range(2,total_rows+1):
-        row_list=[]
-        for c in range(1,total_coloum+1):
-            row_list.append(sheet.cell(r,c).value)
-        final_list.append(row_list)
+    data = []
+    for row in ws.iter_rows(min_row=2, values_only=True):  
+      
+        if all(cell is None for cell in row):
+            continue
 
-    return final_list
+       
+        cleaned = [str(cell).strip() if cell is not None else "" for cell in row]
+
+        if len(cleaned) == 1:
+          
+            data.append(cleaned[0])
+        else:
+            data.append(tuple(cleaned))
+
+    wb.close()
+    return data

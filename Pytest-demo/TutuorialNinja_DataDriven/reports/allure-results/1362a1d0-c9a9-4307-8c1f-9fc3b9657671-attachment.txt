@@ -1,0 +1,2 @@
+[32mINFO    [0m utilites.logCreator:test_login.py:112 Starting test_search with product='canon'
+[32mINFO    [0m utilites.logCreator:test_login.py:148 Search SUCCESS — product='canon' | 1 result(s) found.

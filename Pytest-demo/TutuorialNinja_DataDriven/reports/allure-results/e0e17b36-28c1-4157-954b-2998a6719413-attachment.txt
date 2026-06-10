@@ -1,0 +1,1 @@
+[32mINFO    [0m utilites.logCreator:test_login.py:105 Starting test_search with product='['canon']'

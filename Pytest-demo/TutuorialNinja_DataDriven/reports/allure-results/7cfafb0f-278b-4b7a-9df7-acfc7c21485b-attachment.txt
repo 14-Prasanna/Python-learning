@@ -1,0 +1,4 @@
+[32mINFO    [0m utilites.logCreator:test_login.py:19 Starting test_login with username='2k22cse115@kiot.ac.in'
+[32mINFO    [0m utilites.logCreator:test_login.py:72 Login successful for username='2k22cse115@kiot.ac.in'
+[32mINFO    [0m utilites.logCreator:test_login.py:94 Logout successful for username='2k22cse115@kiot.ac.in'
+[32mINFO    [0m utilites.logCreator:test_login.py:98 Redirected to: https://tutorialsninja.com/demo/index.php?route=common/home

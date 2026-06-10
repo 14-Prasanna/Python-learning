@@ -1,0 +1,2 @@
+[32mINFO    [0m utilites.logCreator:test_login.py:29 Starting test_search with product='kiot'
+[33mWARNING [0m utilites.logCreator:test_login.py:80 Search returned no results for product='kiot': 'There is no product that matches the search criteria.'

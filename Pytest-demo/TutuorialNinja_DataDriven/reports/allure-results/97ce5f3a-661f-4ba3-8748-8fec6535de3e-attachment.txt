@@ -1,0 +1,3 @@
+[32mINFO    [0m utilites.logCreator:test_login.py:21 Starting test_login with username='124@gmail.com'
+[33mWARNING [0m utilites.logCreator:test_login.py:50 Invalid login attempt — username='124@gmail.com' | Warning: 'Warning: No match for E-Mail Address and/or Password.'
+[32mINFO    [0m utilites.logCreator:test_login.py:55 Invalid login handled correctly.

@@ -1,0 +1,2 @@
+[32mINFO    [0m utilites.logCreator:test_login.py:112 Starting test_search with product='canon'
+[33mWARNING [0m utilites.logCreator:test_login.py:163 Search returned no results for product='canon': 'There is no product that matches the search criteria.'

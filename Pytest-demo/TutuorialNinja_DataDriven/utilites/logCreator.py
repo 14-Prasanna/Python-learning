@@ -1,7 +1,8 @@
 import logging
 
-def log_generator():
 
+def log_generator():
+    
     logging.basicConfig(
         filename="testlogreport.log",
         level=logging.INFO,
@@ -10,6 +11,5 @@ def log_generator():
         force=True
     )
 
-    logger = logging.getLogger()
-
+    logger = logging.getLogger(__name__)
     return logger
